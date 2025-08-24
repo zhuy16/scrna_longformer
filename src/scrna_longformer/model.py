@@ -49,9 +49,10 @@ class SCRNALongformer(nn.Module):
         emb = self.norm(emb)
         logits = self.clf_head(emb)
         # compute per-token mlm predictions if requested
-        mlm_pred = None
         if self.mlm:
             # x is (B, G, D) or (B, G+1, D) if cls token used; exclude cls if present
             x_tokens = x[:, 1:, :] if self.pool == "cls" else x
             mlm_pred = self.mlm_head(x_tokens).squeeze(-1)  # (B,G)
-        return logits, emb, mlm_pred
+            return logits, emb, mlm_pred
+        # backward compatible return when mlm not enabled
+        return logits, emb
