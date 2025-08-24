@@ -20,6 +20,7 @@ def split_indices(n, frac=0.8, seed=42):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", type=str, default="configs/default.yaml")
+    ap.add_argument("--fast", action="store_true", help="Run a 1-epoch fast smoke run (small batch/hvg) for end-to-end checks")
     args = ap.parse_args()
     cfg = yaml.safe_load(open(args.config))
 
@@ -29,6 +30,14 @@ if __name__ == "__main__":
 
     dat = np.load(cfg["data"]["npz_path"], allow_pickle=True)
     X, y, A = dat["X"], dat["y"], dat["A"].astype(bool)
+    # override for fast smoke run
+    if args.fast:
+        print("FAST MODE: overriding config for a 1-epoch smoke run")
+        cfg["train"]["epochs"] = 1
+        cfg["data"]["batch_size"] = min(8, X.shape[0])
+        # optionally reduce model size for speed
+        cfg["model"]["d_model"] = min(cfg["model"].get("d_model", 64), 64)
+        cfg["model"]["depth"] = 1
     n_classes = (y.max() + 1) if cfg["model"]["n_classes"] == "auto" else cfg["model"]["n_classes"]
 
     train_idx, val_idx = split_indices(len(X), frac=cfg["data"]["train_frac"], seed=cfg["seed"])
