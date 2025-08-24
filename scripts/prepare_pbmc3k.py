@@ -1,5 +1,5 @@
 import argparse, numpy as np
-from src.scrna_longformer.data import load_pbmc3k_hvg, prepare_pbmc3k_fast
+from scrna_longformer.data import load_pbmc3k_hvg, prepare_pbmc3k_fast
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

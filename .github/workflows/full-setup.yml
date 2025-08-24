@@ -31,6 +31,14 @@ jobs:
           mamba install -n scrna -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
           mamba install -n scrna -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
 
+      - name: Install local package (editable)
+        shell: bash -l {0}
+        run: |
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda activate scrna
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -e .
+
       - name: Run requirements check
         shell: bash -l {0}
         run: |

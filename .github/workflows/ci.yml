@@ -45,9 +45,17 @@ jobs:
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna
           # use mamba for fast package installs
-          mamba install -n scrna -y -c conda-forge numpy
+          mamba install -n scrna -y -c conda-forge numpy scikit-learn
           # Install PyTorch CPU build for smoke test
           mamba install -n scrna -y -c pytorch -c conda-forge pytorch cpuonly || true
+
+      - name: Install local package (editable)
+        shell: bash -l {0}
+        run: |
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda activate scrna
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -e .
 
       - name: Model smoke test
         shell: bash -l {0}
@@ -55,7 +63,7 @@ jobs:
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna
           python - <<'PY'
-          from src.scrna_longformer.model import SCRNALongformer
+          from scrna_longformer.model import SCRNALongformer
           import torch
           G=16
           model=SCRNALongformer(n_genes=G, n_classes=4)

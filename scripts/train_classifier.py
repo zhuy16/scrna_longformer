@@ -1,8 +1,8 @@
 import argparse, yaml, numpy as np, torch
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import f1_score, accuracy_score
-from src.scrna_longformer.model import SCRNALongformer
-from src.scrna_longformer.utils import seed_all, get_device
+from scrna_longformer.model import SCRNALongformer
+from scrna_longformer.utils import seed_all, get_device
 
 class CellsClsDS(Dataset):
     def __init__(self, X, y):

@@ -1,8 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "scrna-longformer"
-version = "0.1.0"
+name = "scrna_longformer"
+version = "0.0.0"
 description = "kNN-masked gene-token transformer for scRNA-seq (PBMC3k MVP)"
+readme = "README.md"
 requires-python = ">=3.10"
+authors = [ { name = "zhuy16" } ]
 dependencies = []
 
 [tool.setuptools.packages.find]
