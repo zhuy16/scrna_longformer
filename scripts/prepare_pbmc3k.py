@@ -10,11 +10,11 @@ if __name__ == "__main__":
     args = ap.parse_args()
 
     if args.fast:
-        X, y, A, var_names = prepare_pbmc3k_fast(k=max(args.k, 64), n_hvg=256)
+        X, y, A, var_names, gene_mean, gene_std = prepare_pbmc3k_fast(k=max(args.k, 64), n_hvg=256)
     else:
-        X, y, A, var_names = load_pbmc3k_hvg(k=args.k, n_hvg=args.hvg)
+        X, y, A, var_names, gene_mean, gene_std = load_pbmc3k_hvg(k=args.k, n_hvg=args.hvg)
 
-    np.savez(args.out, X=X, y=y, A=A, var_names=var_names)
+    np.savez(args.out, X=X, y=y, A=A, var_names=var_names, gene_mean=gene_mean, gene_std=gene_std)
     np.save("data/pbmc3k_labels.npy", y)
     print(f"Saved {args.out} and labels to data/pbmc3k_labels.npy")
 
