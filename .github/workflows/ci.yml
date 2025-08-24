@@ -61,3 +61,11 @@ jobs:
           logits, emb = model(xb, mask)
           print('SMOKE OK', logits.shape, emb.shape)
           PY
+
+      - name: Run unit tests (fast)
+        shell: bash -l {0}
+        run: |
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda activate scrna
+          pip install pytest
+          pytest -q tests/test_model.py
