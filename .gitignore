@@ -12,3 +12,4 @@ data/*.npz
 data/*emb*.npy
 *.png
 *.svg
+data/*.pt
