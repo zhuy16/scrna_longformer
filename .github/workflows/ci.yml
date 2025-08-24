@@ -81,4 +81,6 @@ jobs:
           conda activate scrna
           # prepare fast data artifact if not present
           python scripts/prepare_pbmc3k.py --fast --out data/pbmc3k_hvg_knn.npz
+          # validate artifact before training
+          python scripts/validate_data.py data/pbmc3k_hvg_knn.npz
           python scripts/train_classifier.py --fast --config configs/default.yaml
