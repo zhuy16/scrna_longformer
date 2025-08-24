@@ -5,7 +5,7 @@ class SCRNALongformer(nn.Module):
     """
     Gene-token transformer with kNN mask. Minimal supervised variant with classifier head.
     """
-    def __init__(self, n_genes, n_classes, d_model=128, depth=2, n_heads=4, mlp_ratio=4, pool="mean"):
+    def __init__(self, n_genes, n_classes, d_model=128, depth=2, n_heads=4, mlp_ratio=4, pool="mean", mlm=False):
         super().__init__()
         self.n_genes = n_genes
         self.pool = pool
@@ -15,6 +15,9 @@ class SCRNALongformer(nn.Module):
         self.cls_token = nn.Parameter(torch.zeros(1,1,d_model)) if pool == "cls" else None
         self.norm = nn.LayerNorm(d_model)
         self.clf_head = nn.Linear(d_model, n_classes)
+        self.mlm = mlm
+        # simple MLM head: project back to scalar expression per gene (regression)
+        self.mlm_head = nn.Linear(d_model, 1) if mlm else None
 
     def forward(self, values, mask):
         """
@@ -45,4 +48,10 @@ class SCRNALongformer(nn.Module):
 
         emb = self.norm(emb)
         logits = self.clf_head(emb)
-        return logits, emb
+        # compute per-token mlm predictions if requested
+        mlm_pred = None
+        if self.mlm:
+            # x is (B, G, D) or (B, G+1, D) if cls token used; exclude cls if present
+            x_tokens = x[:, 1:, :] if self.pool == "cls" else x
+            mlm_pred = self.mlm_head(x_tokens).squeeze(-1)  # (B,G)
+        return logits, emb, mlm_pred

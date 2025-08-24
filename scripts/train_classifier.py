@@ -21,6 +21,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", type=str, default="configs/default.yaml")
     ap.add_argument("--fast", action="store_true", help="Run a 1-epoch fast smoke run (small batch/hvg) for end-to-end checks")
+    ap.add_argument("--mlm", action="store_true", help="Run masked-gene prediction (MLM) objective instead of classifier")
     args = ap.parse_args()
     cfg = yaml.safe_load(open(args.config))
 
@@ -55,6 +56,7 @@ if __name__ == "__main__":
         n_heads=cfg["model"]["n_heads"],
         mlp_ratio=cfg["model"]["mlp_ratio"],
         pool=cfg["model"]["pool"],
+        mlm=args.mlm,
     ).to(dev)
 
     mask = torch.tensor(A, dtype=torch.bool, device=dev)
@@ -62,21 +64,45 @@ if __name__ == "__main__":
     weight_decay = float(cfg["train"].get("weight_decay", 0.0))
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     ce = torch.nn.CrossEntropyLoss()
+    mse = torch.nn.MSELoss()
 
     best_f1, best_state = 0.0, None
     for epoch in range(1, cfg["train"]["epochs"]+1):
         model.train()
         for xb, yb in dl_tr:
             xb, yb = xb.to(dev), yb.to(dev)
-            logits, emb = model(xb, mask)
-            loss = ce(logits, yb)
+            if args.mlm:
+                # create mask per-sample: mask_prob from config
+                p = float(cfg["train"].get("mlm_mask_prob", 0.15))
+                # bernoulli mask (B,G) True = masked
+                msk = torch.rand(xb.shape, device=xb.device) < p
+                # forward with full xb, model will return mlm_pred
+                logits, emb, mlm_pred = model(xb, mask)
+                # compute loss only on masked positions
+                if mlm_pred is None:
+                    raise RuntimeError("Model was not created with mlm=True but --mlm was set")
+                target = xb
+                masked_pred = mlm_pred[msk]
+                masked_target = target[msk]
+                # if no positions masked (rare), skip
+                if masked_pred.numel() == 0:
+                    continue
+                loss = mse(masked_pred, masked_target)
+            else:
+                logits, emb = model(xb, mask)
+                loss = ce(logits, yb)
             opt.zero_grad(); loss.backward(); opt.step()
         # eval
         model.eval(); preds, trues, embs = [], [], []
         with torch.no_grad():
             for xb, yb in dl_va:
                 xb, yb = xb.to(dev), yb.to(dev)
-                logits, emb = model(xb, mask)
+                out = model(xb, mask)
+                if args.mlm:
+                    # model returns (logits, emb, mlm_pred)
+                    logits, emb, _ = out
+                else:
+                    logits, emb = out
                 preds += logits.argmax(1).cpu().tolist()
                 trues += yb.cpu().tolist()
                 embs.append(emb.cpu())
@@ -96,7 +122,11 @@ if __name__ == "__main__":
     with torch.no_grad():
         for xb, yb in DataLoader(CellsClsDS(X, y), batch_size=cfg["data"]["batch_size"]):
             xb = xb.to(dev)
-            _, emb = model(xb, mask)
+            out = model(xb, mask)
+            if args.mlm:
+                _, emb, _ = out
+            else:
+                _, emb = out
             all_embs.append(emb.cpu())
     embs = torch.cat(all_embs).numpy()
     np.save(cfg["data"]["emb_out"], embs)
