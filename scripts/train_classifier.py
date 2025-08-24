@@ -58,7 +58,9 @@ if __name__ == "__main__":
     ).to(dev)
 
     mask = torch.tensor(A, dtype=torch.bool, device=dev)
-    opt = torch.optim.AdamW(model.parameters(), lr=cfg["train"]["lr"], weight_decay=cfg["train"]["weight_decay"])
+    lr = float(cfg["train"].get("lr", 1e-3))
+    weight_decay = float(cfg["train"].get("weight_decay", 0.0))
+    opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     ce = torch.nn.CrossEntropyLoss()
 
     best_f1, best_state = 0.0, None
