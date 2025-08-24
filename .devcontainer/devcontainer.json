@@ -1,0 +1,21 @@
+{
+  "name": "scrna-longformer devcontainer",
+  "build": {
+    "dockerfile": "../preparation/Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/conda/envs/scrna/bin/python"
+      }
+    }
+  },
+  "runArgs": ["--init"],
+  "postCreateCommand": "conda activate scrna || true; python scripts/check_requirements.py || true"
+}
