@@ -26,6 +26,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Verify built image exists
+        run: |
+          echo "Checking for local image 'scrna-longformer:ci'..."
+          if ! docker image inspect scrna-longformer:ci > /dev/null 2>&1; then
+            echo "ERROR: Image 'scrna-longformer:ci' not found locally. Ensure the build step completed and tagged the image as scrna-longformer:ci." >&2
+            docker images --format '{{.Repository}}:{{.Tag}}\t{{.ID}}\t{{.Size}}' || true
+            exit 125
+          fi
+
       - name: Run container check
         run: |
           docker run --rm scrna-longformer:ci python scripts/check_requirements.py
