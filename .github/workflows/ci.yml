@@ -48,10 +48,10 @@ jobs:
           source "$(conda info --base)/etc/profile.d/conda.sh"
           conda create -n scrna -y python=3.10 || true
           conda activate scrna
-          # core scientific deps
-          mamba install -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
+          # core scientific deps (use conda on runner to avoid relying on mamba binary)
+          conda install -n scrna -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
           # pytorch (CPU/MPS-friendly build selection)
-          mamba install -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
+          conda install -n scrna -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
 
       - name: Run requirements check
         shell: bash -l {0}
