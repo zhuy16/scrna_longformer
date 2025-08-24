@@ -1,4 +1,4 @@
-FROM mambaorg/mambaforge:latest
+FROM condaforge/mambaforge:latest
 
 WORKDIR /workspace
 
