@@ -6,18 +6,26 @@ A tiny, reproducible starter for a kNN-masked gene-token transformer:
 - Outputs a **cell embedding** and a **cell-type classifier** head
 
 ## Quickstart
+
+**⚠️ IMPORTANT: Use the working environment setup:**
+
+```bash
+# 1) Setup working environment (handles leiden/igraph fixes)
+./setup_environment.sh
+
+# 2) Generate real PBMC data with leiden clustering
+PYTHONPATH=./src python scripts/prepare_pbmc3k.py --out data/pbmc3k_hvg_knn_leiden.npz
+
+# 3) Run fast cross-validation test
+PYTHONPATH=./src python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
+
+# 4) Visualize embeddings (optional)
+PYTHONPATH=./src python scripts/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
 ```
-python -m venv .venv && source .venv/bin/activate  # or conda
-pip install -r requirements.txt
 
-# 1) Prepare PBMC3k data, HVGs, and gene kNN mask
-python scripts/prepare_pbmc3k.py --k 16 --hvg 2000
-
-# 2) Train classifier (Leiden labels as supervision)
-python scripts/train_classifier.py --config configs/default.yaml
-
-# 3) Visualize embeddings
-python scripts/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
+**Alternative wrapper method:**
+```bash
+./run_with_env.sh python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
 ```
 
 Notes
@@ -28,6 +36,18 @@ This MVP focuses on classification + embeddings. A masked-gene loss can be added
 # scrna_longformer
 
 ## Data preparation notes
+
+### Gene scaling and z-scoring
+
+**Important**: Starting from v0.1.1, the data preparation pipeline includes proper gene scaling:
+
+1. **During preparation**: Genes are scaled to zero mean and unit variance across cells using `sc.pp.scale(adata, max_value=10)` before PCA and clustering
+2. **For transformer input**: The saved expression matrix `X` is already properly scaled 
+3. **Z-scoring config**: The `data.zscore: true` option applies additional z-scoring using pre-scaling gene statistics, which is mainly useful for MLM experiments on original log1p data
+
+**Recommendation**: Use `configs/default_scaled.yaml` (with `zscore: false`) for classification tasks, since the data is already optimally scaled for the transformer.
+
+### HVG selection warnings
 
 When running the fast prepare script (`python scripts/prepare_pbmc3k.py --fast`), you may see a
 warning like:

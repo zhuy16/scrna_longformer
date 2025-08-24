@@ -1,0 +1,27 @@
+seed: 42
+device_preference: mps
+
+data:
+  npz_path: data/pbmc3k_hvg_knn_leiden_top500.npz  # Top 500 most variable genes
+  emb_out: data/pbmc3k_emb_cls.npy
+  model_out: data/scrna_longformer_cls.pt
+  labels: data/pbmc3k_labels.npy
+  train_frac: 0.3         
+  batch_size: 32          
+  num_workers: 0
+  mask_k: 8               
+  zscore: false
+
+model:
+  d_model: 32             
+  depth: 1                
+  n_heads: 2              
+  mlp_ratio: 2            
+  pool: mean
+  n_classes: auto
+
+train:
+  epochs: 2               
+  lr: 1e-3                
+  weight_decay: 0.01
+  log_every: 5

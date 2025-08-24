@@ -1,0 +1,27 @@
+seed: 42
+device_preference: auto
+
+data:
+  npz_path: data/pbmc3k_hvg_knn_fast.npz
+  emb_out: data/pbmc3k_emb_cls.npy
+  model_out: data/scrna_longformer_cls.pt
+  labels: data/pbmc3k_labels.npy
+  train_frac: 0.8
+  batch_size: 16          # Smaller batch for better gradients
+  num_workers: 0
+  mask_k: 32              # More neighbors in attention mask
+  zscore: false
+
+model:
+  d_model: 128            # Increase model capacity
+  depth: 2                # Add more depth
+  n_heads: 4              # More attention heads
+  mlp_ratio: 4            # Larger MLP
+  pool: mean
+  n_classes: auto
+
+train:
+  epochs: 10              # More training
+  lr: 5e-4                # More conservative learning rate
+  weight_decay: 0.01
+  log_every: 10

@@ -1,0 +1,27 @@
+seed: 42
+device_preference: cpu  # Use CPU to avoid MPS memory issues
+
+data:
+  npz_path: data/pbmc3k_hvg_knn_fast.npz  # Go back to small synthetic data for now
+  emb_out: data/pbmc3k_emb_cls.npy
+  model_out: data/scrna_longformer_cls.pt
+  labels: data/pbmc3k_labels.npy
+  train_frac: 0.8
+  batch_size: 64
+  num_workers: 0
+  mask_k: 8
+  zscore: false
+
+model:
+  d_model: 16             # Very tiny model
+  depth: 1                
+  n_heads: 1              
+  mlp_ratio: 1            
+  pool: mean
+  n_classes: auto
+
+train:
+  epochs: 1               
+  lr: 1e-3                
+  weight_decay: 0.01
+  log_every: 5

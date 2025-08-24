@@ -1,0 +1,26 @@
+seed: 42
+device_preference: auto
+
+data:
+  npz_path: data/pbmc3k_hvg_knn.npz
+  emb_out: data/pbmc3k_emb_cls.npy
+  model_out: data/scrna_longformer_cls.pt
+  labels: data/pbmc3k_labels.npy
+  train_frac: 0.8
+  batch_size: 32          # Increased from 8 to 32 for faster batching
+  num_workers: 0
+  mask_k: 16
+
+model:
+  d_model: 64             # Reduced from 128 to 64
+  depth: 1                # Reduced from 2 to 1 layer
+  n_heads: 2              # Reduced from 4 to 2 heads  
+  mlp_ratio: 2            # Reduced from 4 to 2
+  pool: mean
+  n_classes: auto
+
+train:
+  epochs: 2               # Reduced from 5 to 2 epochs
+  lr: 1e-3                # Increased LR for faster convergence
+  weight_decay: 0.01
+  log_every: 5            # More frequent logging

@@ -1,8 +1,8 @@
 seed: 42
-device_preference: auto   # auto | mps | cuda | cpu
+device_preference: auto
 
 data:
-  npz_path: data/pbmc3k_hvg_knn_fast.npz  # Use multi-class synthetic data
+  npz_path: data/pbmc3k_hvg_knn.npz
   emb_out: data/pbmc3k_emb_cls.npy
   model_out: data/scrna_longformer_cls.pt
   labels: data/pbmc3k_labels.npy
@@ -10,14 +10,15 @@ data:
   batch_size: 8
   num_workers: 0
   mask_k: 16
+  zscore: false  # Data is already properly scaled during preparation
 
 model:
   d_model: 128
   depth: 2
   n_heads: 4
   mlp_ratio: 4
-  pool: mean        # mean | cls
-  n_classes: auto   # auto → infer from labels
+  pool: mean
+  n_classes: auto
 
 train:
   epochs: 5

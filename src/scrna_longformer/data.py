@@ -69,8 +69,15 @@ def load_pbmc3k_hvg(k=16, n_hvg=2000):
         adata.var['highly_variable'] = mask
     adata = adata[:, adata.var['highly_variable']].copy()
     X = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
+    
+    # compute per-gene stats on log1p-normalized data BEFORE scaling for potential MLM use
+    Xf = X.astype("float32")
+    gene_mean = Xf.mean(axis=0)
+    gene_std = Xf.std(axis=0) + 1e-6
+    
     # pseudo-labels via Leiden (fast supervision)
     try:
+        sc.pp.scale(adata, max_value=10)  # Scale genes to zero mean, unit variance
         sc.pp.pca(adata)
         sc.pp.neighbors(adata)
         sc.tl.leiden(adata, resolution=1.0)
@@ -86,12 +93,10 @@ def load_pbmc3k_hvg(k=16, n_hvg=2000):
         except Exception:
             y = np.zeros(X.shape[0], dtype=int)
 
-    A = _build_knn_mask_from_matrix(X, k)
-    # compute per-gene stats on log1p-normalized data for optional z-scoring
-    Xf = X.astype("float32")
-    gene_mean = Xf.mean(axis=0)
-    gene_std = Xf.std(axis=0) + 1e-6
-    return Xf, y.astype("int64"), A, adata.var_names.values, gene_mean.astype("float32"), gene_std.astype("float32")
+    # Use SCALED data for the final expression matrix
+    X_scaled = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
+    A = _build_knn_mask_from_matrix(X_scaled, k)
+    return X_scaled.astype("float32"), y.astype("int64"), A, adata.var_names.values, gene_mean.astype("float32"), gene_std.astype("float32")
 
 
 def prepare_pbmc3k_fast(k=64, n_hvg=256):
@@ -125,7 +130,10 @@ def prepare_pbmc3k_fast(k=64, n_hvg=256):
             y = np.zeros(n_cells, dtype=int)
         var_names = np.array([f"gene{i}" for i in range(G)], dtype=object)
         A = _build_knn_mask_from_matrix(X_synth, k)
-        return X_synth.astype("float32"), y.astype("int64"), A, var_names
+        # Compute gene stats for synthetic data
+        gene_mean = X_synth.mean(axis=0).astype("float32")
+        gene_std = (X_synth.std(axis=0) + 1e-6).astype("float32")
+        return X_synth.astype("float32"), y.astype("int64"), A, var_names, gene_mean, gene_std
     # Highly-variable gene selection with fallbacks (same logic as load_pbmc3k_hvg)
     try:
         try:
@@ -141,8 +149,15 @@ def prepare_pbmc3k_fast(k=64, n_hvg=256):
         adata.var['highly_variable'] = mask
     adata = adata[:, adata.var['highly_variable']].copy()
     X = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
+    
+    # compute per-gene stats on log1p-normalized data BEFORE scaling for potential MLM use
+    Xf = X.astype("float32")
+    gene_mean = Xf.mean(axis=0)
+    gene_std = Xf.std(axis=0) + 1e-6
+    
     # try to compute pseudo-labels, fall back to zeros
     try:
+        sc.pp.scale(adata, max_value=10)  # Scale genes to zero mean, unit variance
         sc.pp.pca(adata)
         sc.pp.neighbors(adata)
         sc.tl.leiden(adata, resolution=1.0)
@@ -157,8 +172,7 @@ def prepare_pbmc3k_fast(k=64, n_hvg=256):
         except Exception:
             y = np.zeros(X.shape[0], dtype=int)
 
-    A = _build_knn_mask_from_matrix(X, k)
-    Xf = X.astype("float32")
-    gene_mean = Xf.mean(axis=0)
-    gene_std = Xf.std(axis=0) + 1e-6
-    return Xf, y.astype("int64"), A, adata.var_names.values, gene_mean.astype("float32"), gene_std.astype("float32")
+    # Use SCALED data for the final expression matrix
+    X_scaled = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
+    A = _build_knn_mask_from_matrix(X_scaled, k)
+    return X_scaled.astype("float32"), y.astype("int64"), A, adata.var_names.values, gene_mean.astype("float32"), gene_std.astype("float32")

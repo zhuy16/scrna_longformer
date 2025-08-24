@@ -1,0 +1,27 @@
+seed: 42
+device_preference: auto
+
+data:
+  npz_path: data/pbmc3k_hvg_knn_fast.npz  # Small synthetic data (512 cells, 256 genes)
+  emb_out: data/pbmc3k_emb_cls.npy
+  model_out: data/scrna_longformer_cls.pt
+  labels: data/pbmc3k_labels.npy
+  train_frac: 0.8
+  batch_size: 128         # Very large batch size
+  num_workers: 0
+  mask_k: 4               # Minimal neighbors
+  zscore: false
+
+model:
+  d_model: 16             # Tiny model
+  depth: 1                # Single layer
+  n_heads: 1              # Single head
+  mlp_ratio: 1            # Minimal MLP
+  pool: mean
+  n_classes: auto
+
+train:
+  epochs: 1               # Single epoch
+  lr: 1e-2                # Very high LR
+  weight_decay: 0.0
+  log_every: 1            # Log every batch

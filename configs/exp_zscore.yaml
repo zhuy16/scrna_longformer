@@ -2,26 +2,26 @@ seed: 42
 device_preference: auto
 
 data:
-  npz_path: data/pbmc3k_hvg_knn.npz
+  npz_path: data/pbmc3k_hvg_knn_fast.npz  # Use multi-class synthetic data
   emb_out: data/pbmc3k_emb_cls.npy
   model_out: data/scrna_longformer_cls.pt
   labels: data/pbmc3k_labels.npy
   train_frac: 0.8
-  batch_size: 8
+  batch_size: 32          # Increased for faster training
   num_workers: 0
   mask_k: 16
-  zscore: true
+  zscore: false           # No additional zscore since data is already scaled
 
 model:
-  d_model: 128
-  depth: 2
-  n_heads: 4
-  mlp_ratio: 4
+  d_model: 64             # Reduced for faster training
+  depth: 1                # Reduced for faster training
+  n_heads: 2              # Reduced for faster training
+  mlp_ratio: 2            # Reduced for faster training
   pool: mean
   n_classes: auto
 
 train:
-  epochs: 5
-  lr: 3e-4
+  epochs: 2               # Reduced for faster training
+  lr: 1e-3                # Increased for faster convergence
   weight_decay: 0.01
-  log_every: 20
+  log_every: 5            # More frequent logging

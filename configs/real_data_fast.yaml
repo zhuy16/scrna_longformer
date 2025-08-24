@@ -1,0 +1,27 @@
+seed: 42
+device_preference: auto
+
+data:
+  npz_path: data/pbmc3k_hvg_knn_leiden.npz  # Real PBMC data with leiden clusters
+  emb_out: data/pbmc3k_emb_cls.npy
+  model_out: data/scrna_longformer_cls.pt
+  labels: data/pbmc3k_labels.npy
+  train_frac: 0.3         # Use only 30% for training (much smaller)
+  batch_size: 128         # Large batch size for speed
+  num_workers: 0
+  mask_k: 8               # Fewer neighbors for faster attention
+  zscore: false
+
+model:
+  d_model: 32             # Small model for speed
+  depth: 1                # Single layer
+  n_heads: 2              # Minimal heads
+  mlp_ratio: 2            # Small MLP
+  pool: mean
+  n_classes: auto
+
+train:
+  epochs: 1               # Just 1 epoch for quick test
+  lr: 1e-3                # Moderate LR
+  weight_decay: 0.01
+  log_every: 2            # Frequent logging to see progress
