@@ -74,3 +74,34 @@ reasonable (use UMAP to inspect clusters visually).
 
 If you'd like, I can add an automated validation script that runs these checks and reports a
 short summary.
+
+Mask usage examples
+-------------------
+
+The attention layers accept several mask shapes. Here are examples you can copy/paste:
+
+```python
+import torch
+from scrna_longformer.layers import LocalGraphAttention
+
+# x: (B,G,D)
+B, G, D, H = 2, 256, 64, 4
+x = torch.randn(B, G, D)
+attn = LocalGraphAttention(d_model=D, n_heads=H)
+
+# 1) Global mask (G,G)
+mask_global = torch.ones(G, G, dtype=torch.bool)
+out = attn(x, mask_global)
+
+# 2) Per-batch mask (B,G,G)
+mask_batch = torch.stack([mask_global for _ in range(B)], dim=0)
+out = attn(x, mask_batch)
+
+# 3) Per-head mask (H,G,G)
+mask_head = torch.stack([mask_global for _ in range(H)], dim=0)
+out = attn(x, mask_head)
+
+# 4) Per-batch-per-head (B,H,G,G)
+mask_full = mask_batch.unsqueeze(1).expand(B, H, G, G)
+out = attn(x, mask_full)
+```

@@ -39,6 +39,37 @@ def test_local_graph_attention_identity_mask_returns_v_projection():
     assert torch.allclose(out, expected, atol=1e-6, rtol=1e-5)
 
 
+def test_local_graph_attention_mask_broadcasting_and_device():
+    torch.manual_seed(2)
+    B = 2
+    G = 6
+    D = 8
+    H = 2
+
+    x = torch.randn(B, G, D)
+    attn = LocalGraphAttention(d_model=D, n_heads=H)
+
+    # 2D mask
+    mask2 = torch.ones(G, G, dtype=torch.bool)
+    out2 = attn(x, mask2)
+    assert out2.shape == (B, G, D)
+
+    # 3D mask per-batch
+    mask3b = torch.ones(B, G, G, dtype=torch.bool)
+    out3b = attn(x, mask3b)
+    assert out3b.shape == (B, G, D)
+
+    # 3D mask per-head
+    mask3h = torch.ones(H, G, G, dtype=torch.bool)
+    out3h = attn(x, mask3h)
+    assert out3h.shape == (B, G, D)
+
+    # 4D mask
+    mask4 = torch.ones(B, H, G, G, dtype=torch.bool)
+    out4 = attn(x, mask4)
+    assert out4.shape == (B, G, D)
+
+
 def test_transformer_block_forward_shape_and_finite():
     torch.manual_seed(1)
     B = 2

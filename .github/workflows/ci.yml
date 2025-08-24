@@ -90,7 +90,8 @@ jobs:
           conda activate scrna
           # install pytest via mamba for consistent, fast solves
           mamba install -n scrna -y -c conda-forge pytest || python -m pip install pytest
-          pytest -q tests/test_model.py
+          # run the full test suite (includes attention stability tests)
+          pytest -q
 
       - name: Run 1-epoch smoke training (fast)
         shell: bash -l {0}
