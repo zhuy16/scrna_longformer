@@ -73,3 +73,12 @@ jobs:
           # install pytest via mamba for consistent, fast solves
           mamba install -n scrna -y -c conda-forge pytest || python -m pip install pytest
           pytest -q tests/test_model.py
+
+      - name: Run 1-epoch smoke training (fast)
+        shell: bash -l {0}
+        run: |
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda activate scrna
+          # prepare fast data artifact if not present
+          python scripts/prepare_pbmc3k.py --fast --out data/pbmc3k_hvg_knn.npz
+          python scripts/train_classifier.py --fast --config configs/default.yaml

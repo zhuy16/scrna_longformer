@@ -101,3 +101,44 @@ if __name__ == "__main__":
     embs = torch.cat(all_embs).numpy()
     np.save(cfg["data"]["emb_out"], embs)
     print("Saved embeddings to", cfg["data"]["emb_out"])
+
+    # --- simple artifact validation ---
+    def validate_artifacts(model_path, emb_path, expected_n_cells):
+        import os
+        ok = True
+        print("\nArtifact validation:")
+        if not os.path.exists(model_path):
+            print(f"  FAIL: model file missing: {model_path}")
+            ok = False
+        else:
+            print(f"  OK: model file present: {model_path}")
+
+        if not os.path.exists(emb_path):
+            print(f"  FAIL: embeddings file missing: {emb_path}")
+            ok = False
+        else:
+            emb = np.load(emb_path)
+            print(f"  OK: embeddings shape {emb.shape}, dtype {emb.dtype}")
+            if emb.shape[0] != expected_n_cells:
+                print(f"  FAIL: embeddings rows ({emb.shape[0]}) != expected cells ({expected_n_cells})")
+                ok = False
+            if not np.isfinite(emb).all():
+                print("  FAIL: embeddings contain non-finite values")
+                ok = False
+
+        # try loading model state dict into a fresh model to check compatibility
+        try:
+            sd = torch.load(model_path, map_location='cpu')
+            model_chk = SCRNALongformer(n_genes=X.shape[1], n_classes=int(n_classes), d_model=cfg["model"]["d_model"], depth=cfg["model"]["depth"], n_heads=cfg["model"]["n_heads"], mlp_ratio=cfg["model"]["mlp_ratio"], pool=cfg["model"]["pool"]) 
+            model_chk.load_state_dict(sd)
+            print("  OK: model state_dict loaded into model architecture")
+        except Exception as e:
+            print(f"  FAIL: could not load model state_dict into model: {e}")
+            ok = False
+
+        if ok:
+            print("Artifact validation: PASS")
+        else:
+            print("Artifact validation: FAIL")
+
+    validate_artifacts(cfg["data"]["model_out"], cfg["data"]["emb_out"], X.shape[0])
