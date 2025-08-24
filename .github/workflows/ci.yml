@@ -31,13 +31,14 @@ jobs:
           set -euo pipefail
           echo "Installing Mambaforge into runner..."
           ARCH="x86_64"
-          INSTALLER="Mambaforge-Linux-${ARCH}.sh"
+          INSTALLER="Miniforge3-Linux-${ARCH}.sh"
           curl -fsSL -o /tmp/${INSTALLER} https://github.com/conda-forge/miniforge/releases/latest/download/${INSTALLER}
-          bash /tmp/${INSTALLER} -b -p $HOME/mambaforge
-          export PATH="$HOME/mambaforge/bin:$PATH"
-          source "$HOME/mambaforge/etc/profile.d/conda.sh"
+          bash /tmp/${INSTALLER} -b -p $HOME/miniforge
+          export PATH="$HOME/miniforge/bin:$PATH"
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda create -n scrna -y python=3.10 || true
           conda activate scrna
+          # install mamba into the environment
           conda install -n scrna -c conda-forge mamba -y || true
 
       - name: Create and activate env, install deps via mamba
