@@ -33,7 +33,20 @@ def load_pbmc3k_hvg(k=16, n_hvg=2000):
     sc.pp.filter_genes(adata, min_cells=3)
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
-    sc.pp.highly_variable_genes(adata, n_top_genes=n_hvg, flavor="seurat_v3")
+    # Highly-variable gene selection with graceful fallback if a flavor's dependencies are missing.
+    try:
+        sc.pp.highly_variable_genes(adata, n_top_genes=n_hvg, flavor="seurat_v3")
+    except Exception:
+        try:
+            sc.pp.highly_variable_genes(adata, n_top_genes=n_hvg, flavor="cell_ranger")
+        except Exception:
+            # final fallback: simple variance-based selection
+            Xtmp = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
+            var = np.var(Xtmp, axis=0)
+            idx = np.argsort(-var)[:n_hvg]
+            mask = np.zeros(adata.n_vars, dtype=bool)
+            mask[idx] = True
+            adata.var['highly_variable'] = mask
     adata = adata[:, adata.var['highly_variable']].copy()
     X = adata.X.toarray() if hasattr(adata.X, "toarray") else adata.X
     # pseudo-labels via Leiden (fast supervision)
