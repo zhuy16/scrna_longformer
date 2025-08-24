@@ -25,12 +25,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Mambaforge (conda + mamba)
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Setup micromamba (mamba)
+        uses: mambaorg/micromamba-action@v2
         with:
-          auto-update-conda: true
-          miniforge-variant: Mambaforge
-          python-version: 3.10
+          use-micromamba: true
+          shell: bash
+          image: mambaorg/micromamba:1
+          install: |
+            micromamba create -n scrna -y python=3.10
+            micromamba activate -n scrna
 
       - name: Create and activate env, install deps via mamba
         shell: bash -l {0}
