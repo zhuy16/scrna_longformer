@@ -34,7 +34,9 @@ jobs:
           bash /tmp/${INSTALLER} -b -p $HOME/miniforge
           export PATH="$HOME/miniforge/bin:$PATH"
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda create -n scrna -y python=3.10 || true
+          # install mamba into base for faster solves, then create env with mamba
+          conda install -n base -c conda-forge -y mamba || true
+          mamba create -n scrna -y python=3.10 || true
           conda activate scrna
 
       - name: Install minimal deps (fast)
@@ -42,9 +44,10 @@ jobs:
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna
-          conda install -n scrna -y -c conda-forge numpy
+          # use mamba for fast package installs
+          mamba install -n scrna -y -c conda-forge numpy
           # Install PyTorch CPU build for smoke test
-          conda install -n scrna -y -c pytorch -c conda-forge pytorch cpuonly || true
+          mamba install -n scrna -y -c pytorch -c conda-forge pytorch cpuonly || true
 
       - name: Model smoke test
         shell: bash -l {0}
@@ -67,5 +70,6 @@ jobs:
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna
-          pip install pytest
+          # install pytest via mamba for consistent, fast solves
+          mamba install -n scrna -y -c conda-forge pytest || python -m pip install pytest
           pytest -q tests/test_model.py
