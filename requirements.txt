@@ -1,0 +1,9 @@
+torch>=2.2
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.4
+scanpy>=1.9
+anndata>=0.10
+umap-learn>=0.5
+pyyaml>=6.0
+matplotlib>=3.8

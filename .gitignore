@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+.ipynb_checkpoints/
+dist/
+build/
+
+# Data/outputs
+data/*.npz
+data/*emb*.npy
+*.png
+*.svg
