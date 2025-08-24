@@ -25,15 +25,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup micromamba (mamba)
-        uses: mambaorg/micromamba-action@v2
-        with:
-          use-micromamba: true
-          shell: bash
-          image: mambaorg/micromamba:1
-          install: |
-            micromamba create -n scrna -y python=3.10
-            micromamba activate -n scrna
+      - name: Install Mambaforge (conda + mamba)
+        shell: bash -l {0}
+        run: |
+          set -euo pipefail
+          echo "Installing Mambaforge into runner..."
+          ARCH="x86_64"
+          INSTALLER="Mambaforge-Linux-${ARCH}.sh"
+          curl -fsSL -o /tmp/${INSTALLER} https://github.com/conda-forge/miniforge/releases/latest/download/${INSTALLER}
+          bash /tmp/${INSTALLER} -b -p $HOME/mambaforge
+          export PATH="$HOME/mambaforge/bin:$PATH"
+          source "$HOME/mambaforge/etc/profile.d/conda.sh"
+          conda create -n scrna -y python=3.10 || true
+          conda activate scrna
+          conda install -n scrna -c conda-forge mamba -y || true
 
       - name: Create and activate env, install deps via mamba
         shell: bash -l {0}
