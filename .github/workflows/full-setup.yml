@@ -1,0 +1,39 @@
+name: Full Setup (manual)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  full-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Miniforge and mamba
+        shell: bash -l {0}
+        run: |
+          set -euo pipefail
+          INSTALLER="Miniforge3-Linux-x86_64.sh"
+          curl -fsSL -o /tmp/${INSTALLER} https://github.com/conda-forge/miniforge/releases/latest/download/${INSTALLER}
+          bash /tmp/${INSTALLER} -b -p $HOME/miniforge
+          export PATH="$HOME/miniforge/bin:$PATH"
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda create -n scrna -y python=3.10 || true
+          conda activate scrna
+          conda install -n scrna -c conda-forge mamba -y || true
+
+      - name: Install full deps (heavy)
+        shell: bash -l {0}
+        run: |
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda activate scrna
+          mamba install -n scrna -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
+          mamba install -n scrna -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
+
+      - name: Run requirements check
+        shell: bash -l {0}
+        run: |
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
+          conda activate scrna
+          python scripts/check_requirements.py

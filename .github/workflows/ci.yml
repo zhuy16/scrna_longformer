@@ -10,7 +10,7 @@
 ##
 ## Please see .github/CI_README.md for more details.
 
-name: CI - env setup & smoke
+name: Quick CI - smoke
 
 on:
   push:
@@ -19,56 +19,41 @@ on:
     branches: [ main ]
 
 jobs:
-  setup-check:
+  quick-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Mambaforge (conda + mamba)
+      - name: Install Miniforge
         shell: bash -l {0}
         run: |
           set -euo pipefail
-          echo "Installing Mambaforge into runner..."
-          ARCH="x86_64"
-          INSTALLER="Miniforge3-Linux-${ARCH}.sh"
+          INSTALLER="Miniforge3-Linux-x86_64.sh"
           curl -fsSL -o /tmp/${INSTALLER} https://github.com/conda-forge/miniforge/releases/latest/download/${INSTALLER}
           bash /tmp/${INSTALLER} -b -p $HOME/miniforge
           export PATH="$HOME/miniforge/bin:$PATH"
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda create -n scrna -y python=3.10 || true
           conda activate scrna
-          # install mamba into the environment
-          conda install -n scrna -c conda-forge mamba -y || true
 
-      - name: Create and activate env, install deps via mamba
+      - name: Install minimal deps (fast)
         shell: bash -l {0}
         run: |
-          set -euo pipefail
-          source "$(conda info --base)/etc/profile.d/conda.sh"
-          conda create -n scrna -y python=3.10 || true
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna
-          # core scientific deps (use conda on runner to avoid relying on mamba binary)
-          conda install -n scrna -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
-          # pytorch (CPU/MPS-friendly build selection)
-          conda install -n scrna -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
-
-      - name: Run requirements check
-        shell: bash -l {0}
-        run: |
-          source "$(conda info --base)/etc/profile.d/conda.sh"
-          conda activate scrna
-          python scripts/check_requirements.py
+          conda install -n scrna -y -c conda-forge numpy
+          # Install PyTorch CPU build for smoke test
+          conda install -n scrna -y -c pytorch -c conda-forge pytorch cpuonly || true
 
       - name: Model smoke test
         shell: bash -l {0}
         run: |
-          source "$(conda info --base)/etc/profile.d/conda.sh"
+          source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna
           python - <<'PY'
           from src.scrna_longformer.model import SCRNALongformer
           import torch
-          import numpy as np
           G=16
           model=SCRNALongformer(n_genes=G, n_classes=4)
           xb=torch.randn(2,G)
@@ -76,30 +61,3 @@ jobs:
           logits, emb = model(xb, mask)
           print('SMOKE OK', logits.shape, emb.shape)
           PY
-
-  container-check:
-    runs-on: ubuntu-latest
-    needs: setup-check
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build preparation image (with cache)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: preparation/Dockerfile
-          push: false
-          tags: scrna-longformer:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Run container check
-        run: |
-          docker run --rm scrna-longformer:ci python scripts/check_requirements.py
