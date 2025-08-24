@@ -25,6 +25,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache conda & pip caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            $HOME/miniforge/pkgs
+            $HOME/.cache/pip
+          key: conda-pkgs-${{ runner.os }}-${{ hashFiles('requirements.txt','pyproject.toml') }}
+          restore-keys: |
+            conda-pkgs-${{ runner.os }}-
+
       - name: Install Miniforge
         shell: bash -l {0}
         run: |
