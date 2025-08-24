@@ -70,7 +70,8 @@ print('🎉 All packages verified!')
 
 echo "✅ Environment setup complete!"
 echo ""
-echo "📋 Quick commands:"
-echo "  Test leiden clustering: PYTHONPATH=./src python -c \"import scanpy as sc; print('leiden test:', hasattr(sc.tl, 'leiden'))\""
-echo "  Generate data: PYTHONPATH=./src python scripts/prepare_pbmc3k.py --out data/test.npz"
-echo "  Run CV: PYTHONPATH=./src python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml"
+echo "📋 Next steps:"
+echo "  1. Activate environment: conda activate scrna_fixed"
+echo "  2. Verify: ./verify_environment.sh"
+echo "  3. Generate data: PYTHONPATH=./src python scripts/prepare_pbmc3k.py --out data/test.npz"
+echo "  4. Run CV: PYTHONPATH=./src python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml"

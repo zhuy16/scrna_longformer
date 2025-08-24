@@ -29,23 +29,23 @@ jobs:
           bash /tmp/${INSTALLER} -b -p $HOME/miniforge
           export PATH="$HOME/miniforge/bin:$PATH"
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda create -n scrna -y python=3.10 || true
-          conda activate scrna
-          conda install -n scrna -c conda-forge mamba -y || true
+          conda create -n scrna_fixed -y python=3.10 || true
+          conda activate scrna_fixed
+          conda install -n scrna_fixed -c conda-forge mamba -y || true
 
       - name: Install full deps (heavy)
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
-          mamba install -n scrna -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
-          mamba install -n scrna -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
+          conda activate scrna_fixed
+          mamba install -n scrna_fixed -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib
+          mamba install -n scrna_fixed -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true
 
       - name: Install local package (editable)
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install -e .
 
@@ -53,5 +53,5 @@ jobs:
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           python scripts/check_requirements.py

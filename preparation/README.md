@@ -1,6 +1,13 @@
 Preparation: environment and dependency installation
 ===============================================
 
+**⚠️ DEPRECATED: Use `../setup_environment.sh` instead for the working environment!**
+
+This document is kept for reference, but the working solution is now:
+```bash
+./setup_environment.sh  # From repo root
+```
+
 This document collects the exact commands we used and recommended options to prepare the `scrna-longformer` development environment.
 
 Principles
@@ -9,9 +16,11 @@ Principles
 
 1) Create and activate an environment (recommended)
 
+**⚠️ IMPORTANT: Use the working environment name:**
+
 ```zsh
-conda create -n scrna python=3.10 -y
-conda activate scrna
+conda create -n scrna_fixed python=3.10 -y
+conda activate scrna_fixed
 ```
 
 2) Install mamba (optional but recommended)
@@ -60,7 +69,7 @@ python -m pip install pyyaml
 
 7) Verify installation (quick script included)
 
-From the repo root (after activating `scrna`):
+From the repo root (after activating `scrna_fixed`):
 
 ```zsh
 python scripts/check_requirements.py

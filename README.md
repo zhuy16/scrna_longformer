@@ -7,19 +7,22 @@ A tiny, reproducible starter for a kNN-masked gene-token transformer:
 
 ## Quickstart
 
-**⚠️ IMPORTANT: Use the working environment setup:**
+**⚠️ CRITICAL: Always use the working environment setup first:**
 
 ```bash
-# 1) Setup working environment (handles leiden/igraph fixes)
+# 1) Setup working environment (handles leiden/igraph fixes automatically)
 ./setup_environment.sh
 
-# 2) Generate real PBMC data with leiden clustering
+# 2) Verify environment is correct
+./verify_environment.sh
+
+# 3) Generate real PBMC data with leiden clustering
 PYTHONPATH=./src python scripts/prepare_pbmc3k.py --out data/pbmc3k_hvg_knn_leiden.npz
 
-# 3) Run fast cross-validation test
+# 4) Run fast cross-validation test
 PYTHONPATH=./src python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
 
-# 4) Visualize embeddings (optional)
+# 5) Visualize embeddings (optional)
 PYTHONPATH=./src python scripts/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
 ```
 

@@ -4,7 +4,7 @@ CI checks: host vs container
 This repository's CI intentionally runs two complementary checks:
 
 1) Host-based setup (`setup-check` job)
-- Uses Mambaforge on the GitHub runner to create a `scrna` environment and install packages via `mamba`.
+- Uses Mambaforge on the GitHub runner to create a `scrna_fixed` environment and install packages via `mamba`.
 - Runs `scripts/check_requirements.py` and a small model smoke test.
 - This job mirrors the project’s standard preparation script (`preparation/INSTALL.sh`) and is useful for
   checking package availability on the runner environment.

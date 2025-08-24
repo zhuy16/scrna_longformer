@@ -4,7 +4,7 @@ set -euo pipefail
 # scrna-longformer preparation script (mamba-first)
 # Usage: bash preparation/INSTALL.sh
 
-ENV_NAME="scrna"
+ENV_NAME="scrna_fixed"
 PYTHON_VERSION="3.10"
 
 echo "== scrna-longformer installation (mamba variant) =="

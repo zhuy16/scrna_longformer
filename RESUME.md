@@ -5,7 +5,7 @@ When you return, these are the minimal commands to reproduce the last steps and 
 Environment
 - Activate your project environment (replace with your shell/conda invocation):
   ```bash
-  conda activate scrna
+  conda activate scrna_fixed
   cd /path/to/scrna_longformer
   ```
 
@@ -13,9 +13,9 @@ Option A — Fix Leiden (preferred for Scanpy/Leiden clusters)
 1) Install libomp and reinstall igraph/leidenalg from conda-forge (macOS):
    ```bash
    brew install libomp               # only if Homebrew is available / needed
-   conda install -n scrna -c conda-forge python-igraph leidenalg --yes
+   conda install -n scrna_fixed -c conda-forge python-igraph leidenalg --yes
    # if you still see libomp/ABI errors, force reinstall:
-   conda install -n scrna -c conda-forge python-igraph leidenalg libomp --force-reinstall --yes
+   conda install -n scrna_fixed -c conda-forge python-igraph leidenalg libomp --force-reinstall --yes
    ```
 2) Verify leiden is importable:
    ```bash

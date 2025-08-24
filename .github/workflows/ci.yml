@@ -46,24 +46,24 @@ jobs:
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           # install mamba into base for faster solves, then create env with mamba
           conda install -n base -c conda-forge -y mamba || true
-          mamba create -n scrna -y python=3.10 || true
-          conda activate scrna
+          mamba create -n scrna_fixed -y python=3.10 || true
+          conda activate scrna_fixed
 
       - name: Install minimal deps (fast)
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           # use mamba for fast package installs
-          mamba install -n scrna -y -c conda-forge numpy scikit-learn
+          mamba install -n scrna_fixed -y -c conda-forge numpy scikit-learn
           # Install PyTorch CPU build for smoke test
-          mamba install -n scrna -y -c pytorch -c conda-forge pytorch cpuonly || true
+          mamba install -n scrna_fixed -y -c pytorch -c conda-forge pytorch cpuonly || true
 
       - name: Install local package (editable)
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install -e .
 
@@ -71,7 +71,7 @@ jobs:
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           python - <<'PY'
           from scrna_longformer.model import SCRNALongformer
           import torch
@@ -87,9 +87,9 @@ jobs:
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           # install pytest via mamba for consistent, fast solves
-          mamba install -n scrna -y -c conda-forge pytest || python -m pip install pytest
+          mamba install -n scrna_fixed -y -c conda-forge pytest || python -m pip install pytest
           # run the full test suite (includes attention stability tests)
           pytest -q
 
@@ -97,7 +97,7 @@ jobs:
         shell: bash -l {0}
         run: |
           source "$HOME/miniforge/etc/profile.d/conda.sh"
-          conda activate scrna
+          conda activate scrna_fixed
           # prepare fast data artifact if not present
           python scripts/prepare_pbmc3k.py --fast --out data/pbmc3k_hvg_knn.npz
           # validate artifact before training

@@ -6,8 +6,8 @@ WORKDIR /workspace
 COPY . /workspace
 
 # Create and activate environment, install core deps via mamba
-RUN mamba create -n scrna -y python=3.10 && \
-    /bin/bash -lc "source /opt/conda/etc/profile.d/conda.sh && conda activate scrna && \
+RUN mamba create -n scrna_fixed -y python=3.10 && \
+    /bin/bash -lc "source /opt/conda/etc/profile.d/conda.sh && conda activate scrna_fixed && \
       mamba install -y -c conda-forge scanpy anndata umap-learn python-igraph leidenalg pyyaml numpy pandas scikit-learn matplotlib && \
       mamba install -y -c pytorch -c conda-forge pytorch torchvision torchaudio cpuonly || true && \
       python -m pip install --upgrade pip setuptools wheel && \
@@ -16,6 +16,6 @@ RUN mamba create -n scrna -y python=3.10 && \
   python -m pip install -e src || true"
 
 SHELL ["/bin/bash", "-lc"]
-ENV PATH=/opt/conda/envs/scrna/bin:$PATH
+ENV PATH=/opt/conda/envs/scrna_fixed/bin:$PATH
 
 CMD ["python","scripts/check_requirements.py"]
