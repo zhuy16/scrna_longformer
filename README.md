@@ -1,5 +1,13 @@
 # scrna-longformer: Model Complexity vs Data Size Analysis
 
+scrna_longformer is a research and benchmarking repository for single-cell RNA sequencing (scRNA-seq) classification using transformer architectures with long-sequence attention. The project explores whether transformers—adapted with techniques like kNN-masked attention to handle tens of thousands of genes—can outperform simpler models in realistic scRNA-seq tasks.
+
+Through systematic comparisons, the repo shows that when data is limited (e.g., thousands rather than millions of cells), simple models such as logistic regression can actually outperform transformers in terms of generalization and stability. The codebase therefore serves both as:
+
+a practical toolkit for experimenting with attention mechanisms on scRNA-seq data, and
+
+a cautionary framework highlighting the tradeoff between model complexity and dataset size in computational biology.
+
 **🎯 Key Finding:** *Simple models dramatically outperform complex transformers on small biological datasets*
 
 ## 🚀 **Striking Results Summary**
