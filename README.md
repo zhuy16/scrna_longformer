@@ -42,16 +42,6 @@ a cautionary framework highlighting the tradeoff between model complexity and da
 
 ---
 
-## 📊 **Architecture Comparison**
-
-![Architecture Comparison](docs/architecture_comparison.png)
-
-*Visual comparison showing why transformers overfit on small biological datasets*
-
-![Data Requirements](docs/data_requirements.png)
-
-*Data requirements vs model complexity - the 15x parameter rule in practice*
-
 ### **🏗️ Full Transformer Architecture**
 ```
 Input: Gene Expression (2700 cells × 500 genes)
