@@ -18,4 +18,4 @@ RUN mamba create -n scrna_fixed -y python=3.10 && \
 SHELL ["/bin/bash", "-lc"]
 ENV PATH=/opt/conda/envs/scrna_fixed/bin:$PATH
 
-CMD ["python","scripts/check_requirements.py"]
+CMD ["python","scripts/data/check_requirements.py"]

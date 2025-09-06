@@ -107,7 +107,7 @@ Result: Works well! F1=0.290 ✅
 
 # 2. Compare models head-to-head
 conda activate scrna_fixed
-PYTHONPATH=./src python scripts/baseline_comparison.py
+PYTHONPATH=./src python scripts/analysis/baseline_comparison.py
 
 # Expected output:
 # === Baseline Comparison Results ===
@@ -116,10 +116,10 @@ PYTHONPATH=./src python scripts/baseline_comparison.py
 # Winner: Logistic Regression (5x better F1)
 
 # 3. Run cross-validation to confirm
-PYTHONPATH=./src python scripts/run_cv.py --folds 3 --config configs/real_leiden_top500.yaml
+PYTHONPATH=./src python scripts/analysis/run_cv.py --folds 3 --config configs/real_leiden_top500.yaml
 
 # 4. Visualize architectures
-python scripts/create_diagrams.py
+python scripts/analysis/create_diagrams.py
 open docs/architecture_comparison.png
 ```
 
@@ -238,18 +238,18 @@ This repository contains comprehensive documentation organized for different aud
 ./verify_environment.sh
 
 # 3) Generate real PBMC data with leiden clustering
-PYTHONPATH=./src python scripts/prepare_pbmc3k.py --out data/pbmc3k_hvg_knn_leiden.npz
+PYTHONPATH=./src python scripts/data/prepare_pbmc3k.py --out data/pbmc3k_hvg_knn_leiden.npz
 
 # 4) Run fast cross-validation test
-PYTHONPATH=./src python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
+PYTHONPATH=./src python scripts/analysis/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
 
 # 5) Visualize embeddings (optional)
-PYTHONPATH=./src python scripts/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
+PYTHONPATH=./src python scripts/analysis/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
 ```
 
 **Alternative wrapper method:**
 ```bash
-./run_with_env.sh python scripts/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
+./scripts/setup/run_with_env.sh python scripts/analysis/run_cv.py --folds 2 --config configs/real_leiden_top500.yaml
 ```
 
 Notes
@@ -273,7 +273,7 @@ This MVP focuses on classification + embeddings. A masked-gene loss can be added
 
 ### HVG selection warnings
 
-When running the fast prepare script (`python scripts/prepare_pbmc3k.py --fast`), you may see a
+When running the fast prepare script (`python scripts/data/prepare_pbmc3k.py --fast`), you may see a
 warning like:
 
 ```
@@ -312,7 +312,7 @@ assert np.array_equal(A, A.T)  # symmetric
 
 3) Sanity-check embeddings after a short run
 
-Run a 1-epoch training with `scripts/train_classifier.py --fast` (not implemented by default,
+Run a 1-epoch training with `scripts/analysis/train_classifier.py --fast` (not implemented by default,
 but you can set `--epochs 1` in the script) and check that saved embeddings are finite and
 reasonable (use UMAP to inspect clusters visually).
 

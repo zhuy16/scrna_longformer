@@ -1,7 +1,7 @@
 {
   "name": "scrna-longformer devcontainer",
   "build": {
-    "dockerfile": "../preparation/Dockerfile",
+    "dockerfile": "../scripts/setup/Dockerfile",
     "context": ".."
   },
   "workspaceFolder": "/workspace",
@@ -17,5 +17,5 @@
     }
   },
   "runArgs": ["--init"],
-  "postCreateCommand": "conda activate scrna || true; python scripts/check_requirements.py || true"
+  "postCreateCommand": "conda activate scrna || true; python scripts/data/check_requirements.py || true"
 }

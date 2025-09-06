@@ -50,6 +50,6 @@ python -m pip install --upgrade pip setuptools wheel
 python -m pip install -r ../requirements.txt || true
 
 echo "\nInstallation complete. To use the environment run:\n  conda activate ${ENV_NAME}\n"
-echo "Then verify with: python scripts/check_requirements.py"
+echo "Then verify with: python scripts/data/check_requirements.py"
 
 exit 0

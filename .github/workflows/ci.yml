@@ -1,6 +1,6 @@
 ## NOTE: This workflow performs two kinds of checks:
 ## 1) a host-based mamba/conda environment check (setup-check)
-## 2) a container build + check using the preparation/Dockerfile (container-check)
+## 2) a container build + check using the scripts/setup/Dockerfile (container-check)
 ##
 ## Reasoning / inconsistency:
 ## - Local development on macOS typically uses conda/mamba and can leverage Apple MPS builds of PyTorch.
@@ -99,7 +99,7 @@ jobs:
           source "$HOME/miniforge/etc/profile.d/conda.sh"
           conda activate scrna_fixed
           # prepare fast data artifact if not present
-          python scripts/prepare_pbmc3k.py --fast --out data/pbmc3k_hvg_knn.npz
+          python scripts/data/prepare_pbmc3k.py --fast --out data/pbmc3k_hvg_knn.npz
           # validate artifact before training
-          python scripts/validate_data.py data/pbmc3k_hvg_knn.npz
-          python scripts/train_classifier.py --fast --config configs/default.yaml
+          python scripts/data/validate_data.py data/pbmc3k_hvg_knn.npz
+          python scripts/analysis/train_classifier.py --fast --config configs/default.yaml

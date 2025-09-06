@@ -72,7 +72,7 @@ python -m pip install pyyaml
 From the repo root (after activating `scrna_fixed`):
 
 ```zsh
-python scripts/check_requirements.py
+python scripts/data/check_requirements.py
 ```
 
 It prints OK or MISS lines for each package (and versions when importable).
@@ -86,19 +86,19 @@ It prints OK or MISS lines for each package (and versions when importable).
 - Prepare PBMC3k HVG and kNN mask:
 
 ```zsh
-python scripts/prepare_pbmc3k.py --k 16 --hvg 2000
+python scripts/data/prepare_pbmc3k.py --k 16 --hvg 2000
 ```
 
 - Train the classifier (uses Leiden pseudo-labels):
 
 ```zsh
-python scripts/train_classifier.py --config configs/default.yaml
+python scripts/analysis/train_classifier.py --config configs/default.yaml
 ```
 
 - Plot UMAP of embeddings:
 
 ```zsh
-python scripts/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
+python scripts/analysis/plot_umap.py --emb data/pbmc3k_emb_cls.npy --labels data/pbmc3k_labels.npy
 ```
 
 Troubleshooting
@@ -106,4 +106,4 @@ Troubleshooting
 - If `python-igraph` is missing or fails to build with pip, prefer conda-forge.
 - For GPU/CUDA, install a CUDA-enabled PyTorch from the official selector: https://pytorch.org/get-started/locally/
 
-If you want, I can add a one-line `preparation/INSTALL.sh` that runs the conda commands you prefer. Tell me whether you want the `mamba` or `conda` variant.
+If you want, I can add a one-line `scripts/setup/install.sh` that runs the conda commands you prefer. Tell me whether you want the `mamba` or `conda` variant.

@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # run validation on the saved artifact so fast mode fails early if artifact is bad
     try:
         import subprocess, sys
-        rc = subprocess.call([sys.executable, "scripts/validate_data.py", args.out])
+        rc = subprocess.call([sys.executable, "scripts/data/validate_data.py", args.out])
         if rc != 0:
             print(f"Validation failed (exit {rc}) for {args.out}")
             sys.exit(rc)

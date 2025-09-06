@@ -1,4 +1,5 @@
-CI checks: host vs container
+CI chec- Runs `scripts/data/check_requirements.py` and a small model smoke test.
+- This job mirrors the project's standard preparation script (`scripts/setup/install.sh`) and is useful for: host vs container
 =============================
 
 This repository's CI intentionally runs two complementary checks:
@@ -10,7 +11,7 @@ This repository's CI intentionally runs two complementary checks:
   checking package availability on the runner environment.
 
 2) Container-based setup (`container-check` job)
-- Builds `preparation/Dockerfile` and runs `scripts/check_requirements.py` inside the container image.
+- Builds `scripts/setup/Dockerfile` and runs `scripts/data/check_requirements.py` inside the container image.
 - Ensures the Dockerfile is valid and the containerized environment can reproduce the preparation stage.
 
 Why both?
@@ -47,8 +48,8 @@ How to reproduce locally:
 - Build the image locally and try the same command:
 
 ```bash
-docker build -t scrna-longformer:ci -f preparation/Dockerfile .
-docker run --rm scrna-longformer:ci python scripts/check_requirements.py
+docker build -t scrna-longformer:ci -f scripts/setup/Dockerfile .
+docker run --rm scrna-longformer:ci python scripts/data/check_requirements.py
 ```
 
 Minimal remediation (deferred):

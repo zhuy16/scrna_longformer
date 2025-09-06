@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a prepared PBMC3k .npz produced by scripts/prepare_pbmc3k.py.
+"""Validate a prepared PBMC3k .npz produced by scripts/data/prepare_pbmc3k.py.
 
 Checks performed:
 - file exists and loads

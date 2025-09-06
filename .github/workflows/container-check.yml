@@ -20,7 +20,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: preparation/Dockerfile
+          file: scripts/setup/Dockerfile
           push: false
           tags: scrna-longformer:ci
           cache-from: type=gha
@@ -37,4 +37,4 @@ jobs:
 
       - name: Run container check
         run: |
-          docker run --rm scrna-longformer:ci python scripts/check_requirements.py
+          docker run --rm scrna-longformer:ci python scripts/data/check_requirements.py

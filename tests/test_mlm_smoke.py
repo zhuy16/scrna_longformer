@@ -7,11 +7,11 @@ def test_mlm_smoke_run(tmp_path):
     # ensure data artifact exists in CI by running the fast prepare step
     import os
     os.makedirs("data", exist_ok=True)
-    prep = ["python", "scripts/prepare_pbmc3k.py", "--fast", "--out", "data/pbmc3k_hvg_knn.npz"]
+    prep = ["python", "scripts/data/prepare_pbmc3k.py", "--fast", "--out", "data/pbmc3k_hvg_knn.npz"]
     rprep = subprocess.run(prep, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print(rprep.stdout)
 
-    cmd = ["python", "scripts/train_classifier.py", "--fast", "--mlm", "--config", "configs/default.yaml"]
+    cmd = ["python", "scripts/analysis/train_classifier.py", "--fast", "--mlm", "--config", "configs/default.yaml"]
     env = os.environ.copy()
     env["PYTHONPATH"] = "./src"
     # run and ensure exit code 0
