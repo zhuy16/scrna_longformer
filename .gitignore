@@ -7,6 +7,11 @@ __pycache__/
 dist/
 build/
 
+# macOS
+.DS_Store
+*/.DS_Store
+**/.DS_Store
+
 # Data/outputs
 data/*.npz
 data/*emb*.npy
