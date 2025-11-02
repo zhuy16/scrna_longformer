@@ -211,18 +211,18 @@ This project also yielded valuable insights about **effective human-AI collabora
 2. **Theory prevents endless optimization** - Calculate data requirements before model tuning  
 3. **Biological intuition navigates complexity** - Domain expertise prioritizes the vast solution space
 
-**See detailed analysis:** [`LESSONS_LEARNED.md`](LESSONS_LEARNED.md) - *Essential reading for AI-assisted scientific computing*
+**See detailed analysis:** [`LESSONS_LEARNED.md`](docs/research/LESSONS_LEARNED.md) - *Essential reading for AI-assisted scientific computing*
 
 ### **📚 Complete Documentation**
 
 This repository contains comprehensive documentation organized for different audiences:
 
 **📖 [Documentation Index](docs/README.md)** - Navigate to specific topics:
-- **Technical Deep Dive**: [`TECHNICAL_DETAILS.md`](TECHNICAL_DETAILS.md) - Complete architecture specs
-- **Evaluation Methods**: [`EVALUATION_FRAMEWORK.md`](EVALUATION_FRAMEWORK.md) - Statistical analysis methodology  
-- **Project Journey**: [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md) - Complete development timeline
-- **Future Work**: [`FUTURE_DIRECTIONS.md`](FUTURE_DIRECTIONS.md) - Extensions and applications
-- **Achievement Audit**: [`AIMS_ACHIEVEMENT_AUDIT.md`](AIMS_ACHIEVEMENT_AUDIT.md) - Goals vs results
+- **Technical Deep Dive**: [`TECHNICAL_DETAILS.md`](docs/technical/TECHNICAL_DETAILS.md) - Complete architecture specs
+- **Evaluation Methods**: [`EVALUATION_FRAMEWORK.md`](docs/technical/EVALUATION_FRAMEWORK.md) - Statistical analysis methodology  
+- **Project Journey**: [`DEVELOPMENT_LOG.md`](docs/research/DEVELOPMENT_LOG.md) - Complete development timeline
+- **Future Work**: [`FUTURE_DIRECTIONS.md`](docs/research/FUTURE_DIRECTIONS.md) - Extensions and applications
+- **Achievement Audit**: [`AIMS_ACHIEVEMENT_AUDIT.md`](docs/project/AIMS_ACHIEVEMENT_AUDIT.md) - Goals vs results
 
 ---
 
